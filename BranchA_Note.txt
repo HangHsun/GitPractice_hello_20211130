@@ -1,0 +1,6 @@
+createOn_BranchA_20211209-2301
+
+note_20211209-2335
+新分支第一次push
+git push-u origin HEAD = git push-u origin 所在新分支名
+所以可以視為HEAD是自己本地端的指標
