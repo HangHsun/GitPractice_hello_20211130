@@ -1,0 +1,53 @@
+檢視狀態：git status
+
+/*一次性操作*/
+建立遠端：git remote add origin "網址"
+推：(未設預設) git push origin master  //本地支未有對應遠端支
+推：(設預設) git push -u origin master //設本地支有對應遠端支
+建新本地支：git checkout -b 新支名     //先有本地(尚未有遠端)
+建新遠端支： git push -u origin 新支名 //CLI建遠端支會與本地支同名
+
+
+/*重複性操作*/
+加入版控(commit前必須先做)：git add .
+提交：git commit -m "提交名稱"
+拉(已有預設)：git pull      
+推(已有預設)：git push
+衝突解決：
+ ->拉 -> 手動整合衝突檔案(系統會自動加分行,HEAD表示自己的東西)
+ -> 加入版控 -> 提交(系統會內建提交名=merge訊息) ->推
+
+
+/*分支合併操作-GitHub網頁法*/
+(遠端先最新合好，本地才拉)
+{
+	1.去點網頁上的PullRequest，選擇合併的兩支
+  	-> 設定base=合併目標支(要留的T支) || compare=被併支(要刪的S支)
+	2.如果網頁顯示Able to Merge，則表示S進出期間，T沒有新的提交，可以直接合
+	->if-step2-fail 執行"分支操作-S支Rebase更新"
+	3.注意本地端T支，還要先git pull 才能拿到遠端T的合併結果
+}
+
+/*分支操作-S支Rebase更新*/
+{
+	1.本地切到T支，拉最新進度
+	2.本地切到S支，打入git rebase //藉此看出rebase是只看本地的操作
+	3.本地S支可能衝突->解衝突->打入git rebase --continue繼續
+	4.本地S支推上；若無法推->打入git push -f
+	(會把遠端S支的歷史紀錄改亂，公開分支不建議用)
+	5.回到網頁，刷新看能否Able to Merge，再繼續
+}
+
+/*分支合併操作-本地法-拉合推*/
+(本地先最新合好，本地才拉)
+{
+
+/*分支合併操作-本地法-合拉推*/
+(本地先合好，本地才拉)
+{
+	1.本地切到T支，打入git merge S支 //注意本地的S支會因此消失
+	2.本地T支打入git push 
+	->if-step2-fail 執行git pull -> 解衝突 -> 提交(系統會內建提交名=merge訊息)
+	-> 本地T支再嘗試git push
+	//切記不可強制推，遠端T支的別人的衝突提交會被蓋掉
+}//教學會建議使用網頁法，因為有做rebase結果會比較穩定
